@@ -23,11 +23,11 @@ class UserRooms(models.Model):
 class Messages(models.Model):
     chatroom = models.ForeignKey(Chatroom, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    text = models.CharField(max_length=500)
-    date = models.DateTimeField()
+    text = models.CharField(max_length=500, null=False)
+    date = models.DateTimeField(null=False)
 
     def __str__(self):
-        return self.user.name + ': ' + self.text
+        return self.user.username + ': ' + self.text
 
     class Meta:
         verbose_name = 'message'
