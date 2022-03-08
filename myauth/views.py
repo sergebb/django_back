@@ -8,9 +8,4 @@ from rest_framework.permissions import AllowAny
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
-
-    def get_permissions(self):
-        if self.request.method == 'POST':
-            self.permission_classes = (AllowAny,)
-
-        return super(RegisterView, self).get_permissions()
+    permission_classes = (AllowAny,)
