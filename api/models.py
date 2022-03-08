@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 class Chatroom(models.Model):
     name = models.CharField(max_length=50, unique=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    members = models.ManyToManyField(User, through='UserRooms', related_name='joinedrooms')
     
     def __str__(self):
         return self.name
