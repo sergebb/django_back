@@ -6,6 +6,7 @@ class ChatroomSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Chatroom
         fields = ('id', 'name', 'owner')
+        read_only_fields = ['owner']
 
 
 class UserRoomsSerializer(serializers.ModelSerializer):

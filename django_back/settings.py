@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 from corsheaders.defaults import default_headers
 
@@ -111,6 +112,9 @@ TEMPLATES = [
         },
     },
 ]
+
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 WSGI_APPLICATION = 'django_back.wsgi.application'
 

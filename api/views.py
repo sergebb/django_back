@@ -4,7 +4,7 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from drf_yasg import openapi
 from djoser.serializers import UserSerializer
-from drf_yasg.utils import swagger_auto_schema
+from drf_yasg.utils import swagger_auto_schema, no_body
 
 from . import serializers
 from . import models
@@ -20,8 +20,14 @@ class ChatroomAPIView(generics.ListCreateAPIView):
     queryset = models.Chatroom.objects.all()
     serializer_class = serializers.ChatroomSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
 
 class ChatroomUsersAPIView(generics.GenericAPIView):
+    queryset = models.Chatroom.objects.all()
+    serializer_class = serializers.ChatroomSerializer
+
     def get_object(self, pk):
         try:
             return models.Chatroom.objects.get(pk=pk)
@@ -32,7 +38,7 @@ class ChatroomUsersAPIView(generics.GenericAPIView):
                          responses={
                              404: 'Chatroom not found',
                              403: 'Not in a chatroom',
-                             200: UserSerializer
+                             200: UserSerializer(many=True)
                          })
     def get(self, request, pk, format=None):
         user = request.user
@@ -47,6 +53,7 @@ class ChatroomUsersAPIView(generics.GenericAPIView):
         return Response(serializer.data)
 
     @swagger_auto_schema(operation_description="Join the chatroom",
+                         request_body=no_body,
                          responses={
                              404: 'Chatroom not found',
                              400: 'Already in a chatroom',
@@ -81,11 +88,12 @@ class ChatroomUsersAPIView(generics.GenericAPIView):
 
 
 class MessagesAPIView(generics.GenericAPIView):
-    def get_object(self, pk):
-        try:
-            return models.Chatroom.objects.get(pk=pk)
-        except models.Chatroom.DoesNotExist:
-            raise Http404
+    queryset = models.Messages.objects.all()
+    serializer_class = serializers.MessagesSerializer
+
+    def get_chatroom(self):
+        return models.Chatroom.objects.filter(pk=self.kwargs['pk']).first()
+
 
     @swagger_auto_schema(
         operation_description="Get list of messages",
@@ -100,7 +108,7 @@ class MessagesAPIView(generics.GenericAPIView):
         })
     def get(self, request, pk, format=None):
         user = request.user
-        chatroom = self.get_object(pk)
+        chatroom = self.get_chatroom()
 
         in_room = chatroom.members.filter(id=user.id).count()
         if in_room == 0:
@@ -128,7 +136,7 @@ class MessagesAPIView(generics.GenericAPIView):
         })
     def post(self, request, pk, format=None):
         user = request.user
-        chatroom = self.get_object(pk)
+        chatroom = self.get_chatroom()
 
         in_room = chatroom.members.filter(id=user.id).count()
         if in_room == 0:
