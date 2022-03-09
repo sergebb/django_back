@@ -8,6 +8,14 @@ class ChatroomSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'owner')
 
 
+class UserRoomsSerializer(serializers.ModelSerializer):
+    joinedrooms = ChatroomSerializer
+
+    class Meta:
+        model = models.User
+        fields = ('id', 'username', 'joinedrooms')
+
+
 class MessagesSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Messages
