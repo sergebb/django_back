@@ -25,7 +25,7 @@ class Messages(models.Model):
     chatroom = models.ForeignKey(Chatroom, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.CharField(max_length=500, null=False)
-    date = models.DateTimeField(null=False)
+    date = models.DateTimeField(auto_now=True, null=False)
 
     def __str__(self):
         return self.user.username + ': ' + self.text

@@ -19,4 +19,5 @@ class UserRoomsSerializer(serializers.ModelSerializer):
 class MessagesSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Messages
-        fields = ('id', 'chatroom', 'user', 'text', 'date')
+        fields = ('id', 'user', 'text', 'date')
+        read_only_fields = ['id', 'user', 'date']
