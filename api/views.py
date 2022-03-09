@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from rest_framework import generics
 from rest_framework.response import Response
+from djoser.serializers import UserSerializer
 
 from . import serializers
 from . import models
@@ -17,7 +18,7 @@ class ChatroomAPIView(generics.ListCreateAPIView):
 
 
 class ChatroomUsersAPIView(generics.GenericAPIView):
-    serializer_class = serializers.UserSerializer
+    serializer_class = UserSerializer
 
     def get_queryset(self):
         return models.Chatroom.objects.filter(pk=self.kwargs['pk']).all()
@@ -33,7 +34,7 @@ class ChatroomUsersAPIView(generics.GenericAPIView):
             return Response({'success': False, 'message': 'Not in chatroom'}, status=400)
         
         queryset = queryset[0].members.all()
-        serializer = serializers.UserSerializer(queryset, many=True)
+        serializer = UserSerializer(queryset, many=True)
         return Response(serializer.data)
     
     def post(self, request, pk, format=None):
@@ -71,4 +72,4 @@ class ChatroomUsersAPIView(generics.GenericAPIView):
 
 class UsersListAPIView(generics.ListAPIView):
     queryset = models.User.objects.all()
-    serializer_class = serializers.UserSerializer
+    serializer_class = UserSerializer
