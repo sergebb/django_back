@@ -10,6 +10,9 @@ class Chatroom(models.Model):
     def __str__(self):
         return self.name
 
+    def last_message(self):
+        return Messages.objects.filter(chatroom=self).order_by("id").last()
+
     class Meta:
         verbose_name = 'chatroom'
         verbose_name_plural = 'chatrooms'

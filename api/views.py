@@ -16,12 +16,17 @@ def ping(request):
     return JsonResponse({'success': True})
 
 
-class ChatroomAPIView(generics.ListCreateAPIView):
+class ChatroomsAPIView(generics.ListCreateAPIView):
     queryset = models.Chatroom.objects.all()
     serializer_class = serializers.ChatroomSerializer
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+
+class ChatroomAPIView(generics.RetrieveAPIView):
+    queryset = models.Chatroom.objects.all()
+    serializer_class = serializers.ChatroomSerializer
 
 
 class ChatroomUsersAPIView(generics.GenericAPIView):
